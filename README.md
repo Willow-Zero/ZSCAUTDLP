@@ -6,4 +6,5 @@ Zero's Super Cool And Useful To Do List Program is a to do list/calendar program
 Basically, opening it up will give a title screen and the controls at the bottom. select the view you want (currently the calendar is the only functional view), and explore! 
 
 To add an event, use the event adding tool with `m`, keeping care to enter information accurately. it will be added to the calendar.
-To add a tast, use the task adding tool with `y` (currently not implimented), and it wil be added to teh task list. 
+
+To add a task, use the task adding tool with `y` (currently not implimented), and it wil be added to teh task list. 
