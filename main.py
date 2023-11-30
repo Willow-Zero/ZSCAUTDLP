@@ -1,17 +1,32 @@
 import os, math,termios, tty, sys, select, json, datetime, calendar, addanevent
-dat = ""
+import todo as t
+dat,disp = "",""
+todolist = json.loads(open("todolist.json","r").read())
 def loaddata():
 	f = open("list.json", "r")
 	return (f.read())
 	
 	
-def controls():
+def controlsmenu():
 	print("╠════════════════════════════════════════════════════════════╩═══════════════════════╣")
 	print("║ CONTROLS:                                                                          ║")
-	print("║  w - up    d - right  e - next month  q - prev month  x - exit     c - calendar    ║")
-	print("║  s - down  a - left   p - timer       t - to do list  r - select   m - add event   ║")
+	print("║ t - to do list                           x - exit                                  ║")
+	print("║ p - timer                                c - calendar                              ║")
 	print("╚════════════════════════════════════════════════════════════════════════════════════╝")
 	
+def controlstodo():
+	print("╠════════════════════════════════════════════════════════════╩═══════════════════════╣")
+	print("║ CONTROLS:                                                                          ║")
+	print("║  w - up           y - add task                  x - exit        u - back to menu   ║")
+	print("║  s - down         v - see completed tasks       r - select                         ║")
+	print("╚════════════════════════════════════════════════════════════════════════════════════╝")
+	
+def controlscal():	
+	print("╠════════╧═══════╧════════╧═══════╧════════╧════════╧════════╩═══════════════════════╣")
+	print("║ CONTROLS:                                                                          ║")
+	print("║  w - up       d - right     e - next month      x - exit        u - back to menu   ║")
+	print("║  s - down     a - left      q - prev month      r - select      m - add event      ║")
+	print("╚════════════════════════════════════════════════════════════════════════════════════╝")
 class NonBlockingConsole(object):
 
 	def __enter__(self):
@@ -45,57 +60,59 @@ def processdata(d):
 #		dat.update({d[2]:dat[d[2]], d[0]: {d[1], d[3], d[4], d[5], d[6], d[7], d[8]}})
 #	except:
 #		dat.update({d[2]: {d[0]: {d[1], d[3], d[4], d[5], d[6], d[7], d[8]}}})
-
-print("\033c╔════════════════════════════════════════════════════════════╦═══════════════════════╗")
-print("║                                                            ║                       ║")
-print("║              \033[92m⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠐⢷⣦⠀⠙⢿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⡀⠀⠀⠙⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣤⣿⡄⠀⢸⡿⠋⠉⢻⣷⣤⣿⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣿⠇⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣷⡀⠸⣷⡀⠀⠀⠀⠙⣿⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⡏⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣙⣿⡄⠀⠀⠀⠹⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⠁⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⢿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⢸⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⢸⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣇⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⣾⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣿⡄⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⢰⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣿⣿⣄⠀⠀⠀⠀⠀⠀⠙⠛⠿⠿⠿⠿⠿⠟⠋⠀⠀⠀⠀⠀⠀⣠⣿⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣿⣿⣿⣿⣿⣷⣦⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
-print("║              \033[92m⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
-print("║                                                            ║                       ║")
-print("║            Zero's Super Cool And Useful To Do              ║                       ║")
-print("║                 List Program (ZSCAUTDLP)                   ║                       ║")
-print("║                                                            ║                       ║")
-print("║                                                            ║                       ║")
-print("║                                                            ║                       ║")
-controls()
-def listdisp():
-	print("\033c", end="")
-	print("╔════════════════════════════════════════════════════════════╦═══════════════════════╗")
+def menuprint():
+	print("\033c╔════════════════════════════════════════════════════════════╦═══════════════════════╗")
 	print("║                                                            ║                       ║")
-	print("║              ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠐⢷⣦⠀⠙⢿⣿⣿⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⡀⠀⠀⠙⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣤⣿⡄⠀⢸⡿⠋⠉⢻⣷⣤⣿⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣿⠇⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣷⡀⠸⣷⡀⠀⠀⠀⠙⣿⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⡏⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣙⣿⡄⠀⠀⠀⠹⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⠁⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⢿⣿⣿               ║                       ║")    
-	print("║              ⣿⣿⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⢸⣿⣿               ║                       ║")
-	print("║              ⣿⣿⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⢸⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣇⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⣾⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣿⡄⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⢰⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣿⣿⣄⠀⠀⠀⠀⠀⠀⠙⠛⠿⠿⠿⠿⠿⠟⠋⠀⠀⠀⠀⠀⠀⣠⣿⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣿⣿⣿⣿⣿⣷⣦⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿               ║                       ║")
-	print("║              ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠐⢷⣦⠀⠙⢿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⡀⠀⠀⠙⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣤⣿⡄⠀⢸⡿⠋⠉⢻⣷⣤⣿⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⠇⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣷⡀⠸⣷⡀⠀⠀⠀⠙⣿⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⡏⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣙⣿⡄⠀⠀⠀⠹⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⠁⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⢿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⢸⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⢸⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣇⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⣾⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⡄⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⢰⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⣿⣄⠀⠀⠀⠀⠀⠀⠙⠛⠿⠿⠿⠿⠿⠟⠋⠀⠀⠀⠀⠀⠀⣠⣿⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⣿⣿⣿⣿⣷⣦⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
+	print("║              \033[92m⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\033[0m               ║                       ║")
 	print("║                                                            ║                       ║")
 	print("║            Zero's Super Cool And Useful To Do              ║                       ║")
 	print("║                 List Program (ZSCAUTDLP)                   ║                       ║")
 	print("║                                                            ║                       ║")
 	print("║                                                            ║                       ║")
 	print("║                                                            ║                       ║")
-	controls()
+	controlsmenu()
+menuprint()
+def listdisp():
+	lines = t.todoout(todolist,listitem)
+	print("\033c", end="")
+	print("╔════════════════════════════════════════════════════════════╦═══════════════════════╗")
+	print("║                                                            ║                       ║")
+	print("║ " + lines[0] + " ║                       ║")
+	print("║ " + lines[1] + " ║                       ║")
+	print("║ " + lines[2] + " ║                       ║")
+	print("║ " + lines[3] + " ║                       ║")
+	print("║ " + lines[4] + " ║                       ║")
+	print("║ " + lines[5] + " ║                       ║")
+	print("║ " + lines[6] + " ║                       ║")
+	print("║ " + lines[7] + " ║                       ║")
+	print("║ " + lines[8] + " ║                       ║")
+	print("║ " + lines[9] + " ║                       ║")
+	print("║ " + lines[10] + " ║                       ║")
+	print("║ " + lines[11] + " ║                       ║")
+	print("║ " + lines[12] + " ║                       ║")
+	print("║ " + lines[13] + " ║                       ║")
+	print("║ " + lines[14] + " ║                       ║")
+	print("║ " + lines[15] + " ║                       ║")
+	print("║ " + lines[16] + " ║                       ║")
+	print("║ " + lines[17] + " ║                       ║")
+	print("║ " + lines[18] + " ║                       ║")
+	print("║ " + lines[19] + " ║                       ║")
+	print("║                                                            ║                       ║")
+	controlstodo()
 	
 
 
@@ -182,23 +199,25 @@ def calendardisp():
 	print("║  " + thisdict['51']["num"] + "    │  " + thisdict['52']["num"] + "   │   " + thisdict['53']["num"] + "   │  " + thisdict['54']["num"] + "   │   " + thisdict['55']["num"] + "   │   " + thisdict['56']["num"] + "   │   " + thisdict['57']["num"] + "   ║ "+ list[9] +" ║")
 	print("║        │       │        │       │        │        │        ║                       ║") 
 	print("║   " + thisdict['51']["mark"] + "    │    " + thisdict['52']["mark"] + "  │     " + thisdict['53']["mark"] + "  │    " + thisdict['54']["mark"] + "  │     " + thisdict['55']["mark"] + "  │     " + thisdict['56']["mark"] + "  │    " + thisdict['57']["mark"] + "   ║                       ║")
-	print("╠════════╧═══════╧════════╧═══════╧════════╧════════╧════════╩═══════════════════════╣")
-	print("║ CONTROLS:                                                                          ║")
-	print("║  w - up    d - right  e - next month  q - prev month  x - exit     c - calendar    ║")
-	print("║  s - down  a - left   p - timer       t - to do list  r - select   m - add event   ║")
-	print("╚════════════════════════════════════════════════════════════════════════════════════╝")
+	controlscal()
 	
 
 
 
 def goup():
+	global listitem
 	if disp == "c" and coords[0] > 1:
 		coords[0] = coords[0] - 1
 		print(coords)
+	if disp == "t" and listitem > 1:
+		listitem = listitem - 1
 def godown():
+	global listitem
 	if disp == "c" and coords[0] < 5:
 		coords[0] = coords[0] + 1
 		print(coords)
+	if disp == "t" and listitem < 20:
+		listitem = listitem + 1
 def goleft():
 	if disp == "c" and coords[1] > 1:
 		coords[1] = coords[1] - 1
@@ -227,14 +246,14 @@ def prevmonth():
 		yr += -1
 		mn = 11
 	draw()
-disp = ""
+
 def getinput():
 	global disp
 	nowvar = datetime.datetime.now()
 	with NonBlockingConsole() as nbc:
 		
 		d = nbc.get_data() 
-		if d == "x" or d == "w" or d == '' or d == 'q' or d == 'e' or d == "d" or d == "s" or d == "a" or d == "r" or d == "c" or d == "t" or d == "m":
+		if d == "x" or d == "w" or d == "u" or d == "y" or d == "v" or d == '' or d == 'q' or d == 'e' or d == "d" or d == "s" or d == "a" or d == "r" or d == "c" or d == "t" or d == "m":
 			if d == "x":
 				save()
 				return("end")
@@ -266,6 +285,13 @@ def getinput():
 				listdisp()
 			if d == "m":
 				return("add")
+			if d == "u":
+				menuprint()
+			if d == "y":
+				t.addevent()
+				(open("todolist.json","w").write(json.dumps(todolist)))
+			if d == "v":
+				t.viewcomplete()
 nowvar = datetime.datetime.now()
 wk = nowvar.strftime("%w")
 yr = int(nowvar.strftime("%Y"))
@@ -274,8 +300,10 @@ dat = json.loads(loaddata())
 dates = []
 for x in dat:
 	dates.append(x)
+global listitem
 listitem=1
 coords=[1,1]
+selecteditem=0
 while True:
 	f = getinput()
 	if f == "add":
