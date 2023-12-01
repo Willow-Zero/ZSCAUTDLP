@@ -7,4 +7,4 @@ Basically, opening it up will give a title screen and the controls at the bottom
 
 To add an event, use the event adding tool with `m`, keeping care to enter information accurately. it will be added to the calendar.
 
-To add a task, use the task adding tool with `y` (currently not implimented), and it wil be added to teh task list. 
+To add a task, use the task adding tool with `y`, and it wil be added to the task list. 
