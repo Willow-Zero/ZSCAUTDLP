@@ -1,6 +1,10 @@
 import os, math,termios, tty, sys, select, json, datetime, calendar, addanevent
 import todo as t
 dat,disp = "",""
+def ensureexists():
+	open("todolist.json","a").write("")
+	open("list.json","a").write("")
+ensureexists()
 todolist = json.loads(open("todolist.json","r").read())
 def loaddata():
 	f = open("list.json", "r")
@@ -9,23 +13,20 @@ def loaddata():
 	
 def controlsmenu():
 	print("╠════════════════════════════════════════════════════════════╩═══════════════════════╣")
-	print("║ CONTROLS:                                                                          ║")
-	print("║ t - to do list                           x - exit                                  ║")
-	print("║ p - timer                                c - calendar                              ║")
+	print("║ CONTROLS:      t - to do list                   x - exit                           ║")
+	print("║                p - timer                        c - calendar                       ║")
 	print("╚════════════════════════════════════════════════════════════════════════════════════╝")
 	
 def controlstodo():
 	print("╠════════════════════════════════════════════════════════════╩═══════════════════════╣")
-	print("║ CONTROLS:                                                                          ║")
-	print("║  w - up           y - add task                  x - exit        u - back to menu   ║")
-	print("║  s - down         v - see completed tasks       r - select                         ║")
+	print("║ CONTROLS:     w - up       s - down           x - exit         r - select          ║")
+	print("║               v - see completed tasks         y - add task     u - back to menu    ║")
 	print("╚════════════════════════════════════════════════════════════════════════════════════╝")
 	
 def controlscal():	
 	print("╠════════╧═══════╧════════╧═══════╧════════╧════════╧════════╩═══════════════════════╣")
-	print("║ CONTROLS:                                                                          ║")
-	print("║  w - up       d - right     e - next month      x - exit        u - back to menu   ║")
-	print("║  s - down     a - left      q - prev month      r - select      m - add event      ║")
+	print("║ CONTROLS:    wasd to move     e - next month        r - select    m - add event    ║")
+	print("║                               q - prev month        x - exit      u - menu         ║")
 	print("╚════════════════════════════════════════════════════════════════════════════════════╝")
 class NonBlockingConsole(object):
 
@@ -48,10 +49,11 @@ def draw():
 		calendardisp()
 	if disp == "t":
 		listdisp()
-        
+
 def save():
-	f = open("list.json", "w")
-	f.write(json.dumps(dat))
+	with open("list.json", "w") as file:
+		json.dump(dat, file)
+	(open("todolist.json","w").write(json.dumps(todolist)))
 def processdata(d):
 	print(dat)
 #	global  # 
@@ -88,31 +90,58 @@ def menuprint():
 menuprint()
 def listdisp():
 	lines = t.todoout(todolist,listitem)
-	print("\033c", end="")
-	print("╔════════════════════════════════════════════════════════════╦═══════════════════════╗")
-	print("║                                                            ║                       ║")
-	print("║ " + lines[0] + " ║                       ║")
-	print("║ " + lines[1] + " ║                       ║")
-	print("║ " + lines[2] + " ║                       ║")
-	print("║ " + lines[3] + " ║                       ║")
-	print("║ " + lines[4] + " ║                       ║")
-	print("║ " + lines[5] + " ║                       ║")
-	print("║ " + lines[6] + " ║                       ║")
-	print("║ " + lines[7] + " ║                       ║")
-	print("║ " + lines[8] + " ║                       ║")
-	print("║ " + lines[9] + " ║                       ║")
-	print("║ " + lines[10] + " ║                       ║")
-	print("║ " + lines[11] + " ║                       ║")
-	print("║ " + lines[12] + " ║                       ║")
-	print("║ " + lines[13] + " ║                       ║")
-	print("║ " + lines[14] + " ║                       ║")
-	print("║ " + lines[15] + " ║                       ║")
-	print("║ " + lines[16] + " ║                       ║")
-	print("║ " + lines[17] + " ║                       ║")
-	print("║ " + lines[18] + " ║                       ║")
-	print("║ " + lines[19] + " ║                       ║")
-	print("║                                                            ║                       ║")
-	controlstodo()
+	try:
+		print("\033c", end="")
+		print("╔════════════════════════════════════════════════════════════╦═══════════════════════╗")
+		print("║                                                            ║                       ║")
+		print("║ " + lines[0] + " ║ "+ todolist[listitem-1][0] + " "*(21-len(todolist[listitem-1][0])) +" ║")
+		print("║ " + lines[1] + " ║ Priority "+ str(todolist[listitem-1][2]) + " "*(21-9-len(str(todolist[listitem-1][2]))) +" ║")
+		print("║ " + lines[2] + " ║ "+ todolist[listitem-1][4] + " "*(21-len(todolist[listitem-1][4])) +" ║")
+		print("║ " + lines[3] + " ║ "+ todolist[listitem-1][5][:21] + " "*(21-len(todolist[listitem-1][5])) +" ║")
+		print("║ " + lines[4] + " ║ "+ todolist[listitem-1][5][21:42] + " "*(min(21,(42-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[5] + " ║ "+ todolist[listitem-1][5][42:63] + " "*(min(21,(63-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[6] + " ║ "+ todolist[listitem-1][5][63:84] + " "*(min(21,(84-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[7] + " ║ "+ todolist[listitem-1][5][84:105] + " "*(min(21,(105-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[8] + " ║ "+ todolist[listitem-1][5][105:126] + " "*(min(21,(126-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[9] + " ║ "+ todolist[listitem-1][5][126:147] + " "*(min(21,(147-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[10] + " ║ "+ todolist[listitem-1][5][147:168] + " "*(min(21,(168-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[11] + " ║ "+ todolist[listitem-1][5][168:189] + " "*(min(21,(189-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[12] + " ║ "+ todolist[listitem-1][5][189:210] + " "*(min(21,(210-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[13] + " ║ "+ todolist[listitem-1][5][210:231] + " "*(min(21,(231-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[14] + " ║ "+ todolist[listitem-1][5][231:252] + " "*(min(21,(252-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[15] + " ║ "+ todolist[listitem-1][5][252:273] + " "*(min(21,(273-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[16] + " ║ "+ todolist[listitem-1][5][273:294] + " "*(min(21,(294-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[17] + " ║ "+ todolist[listitem-1][5][294:315] + " "*(min(21,(315-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[18] + " ║ "+ todolist[listitem-1][5][315:336] + " "*(min(21,(336-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║ " + lines[19] + " ║ "+ todolist[listitem-1][5][336:357] + " "*(min(21,(357-(len(todolist[listitem-1][5]))))) +" ║")
+		print("║                                                            ║                       ║")
+		controlstodo()
+	except:
+		print("\033c", end="")
+		print("╔════════════════════════════════════════════════════════════╦═══════════════════════╗")
+		print("║                                                            ║                       ║")
+		print("║ " + lines[0] + " ║                       ║")
+		print("║ " + lines[1] + " ║                       ║")
+		print("║ " + lines[2] + " ║                       ║")
+		print("║ " + lines[3] + " ║                       ║")
+		print("║ " + lines[4] + " ║                       ║")
+		print("║ " + lines[5] + " ║                       ║")
+		print("║ " + lines[6] + " ║                       ║")
+		print("║ " + lines[7] + " ║                       ║")
+		print("║ " + lines[8] + " ║                       ║")
+		print("║ " + lines[9] + " ║                       ║")
+		print("║ " + lines[10] + " ║                       ║")
+		print("║ " + lines[11] + " ║                       ║")
+		print("║ " + lines[12] + " ║                       ║")
+		print("║ " + lines[13] + " ║                       ║")
+		print("║ " + lines[14] + " ║                       ║")
+		print("║ " + lines[15] + " ║                       ║")
+		print("║ " + lines[16] + " ║                       ║")
+		print("║ " + lines[17] + " ║                       ║")
+		print("║ " + lines[18] + " ║                       ║")
+		print("║ " + lines[19] + " ║                       ║")
+		print("║                                                            ║                       ║")
+		controlstodo()
 	
 
 
@@ -247,6 +276,11 @@ def prevmonth():
 		mn = 11
 	draw()
 
+def sel():
+	if disp =="t":
+		todolist.remove(todolist[listitem-1])
+		draw()
+
 def getinput():
 	global disp
 	nowvar = datetime.datetime.now()
@@ -257,40 +291,42 @@ def getinput():
 			if d == "x":
 				save()
 				return("end")
-			if d == "w":
+			elif d == "w":
 				goup()
 				draw()
-			if d == "s":
+			elif d == "s":
 				godown()
 				draw()
-			if d == "r": 
-				select()
-			if d == "d":
+			elif d == "r": 
+				sel()
+			elif d == "d":
 				goright()
 				draw()
-			if d == "p":
+			elif d == "p":
 				pomodoro()
-			if d == "q":
+			elif d == "q":
 				prevmonth()
-			if d == "e":
+			elif d == "e":
 				nextmonth()
-			if d == "a":
+			elif d == "a":
 				goleft()
 				draw()
-			if d == "c":
+			elif d == "c":
 				disp = "c"
 				calendardisp()
-			if d == "t":
+			elif d == "t":
 				disp = "t"
 				listdisp()
-			if d == "m":
+			elif d == "m":
 				return("add")
-			if d == "u":
+			elif d == "u":
 				menuprint()
-			if d == "y":
-				t.addevent()
-				(open("todolist.json","w").write(json.dumps(todolist)))
-			if d == "v":
+			elif d == "y":
+				global todolist
+				todolist = (t.addevent(todolist))
+				save()
+				draw()
+			elif d == "v":
 				t.viewcomplete()
 nowvar = datetime.datetime.now()
 wk = nowvar.strftime("%w")

@@ -1,0 +1,18 @@
+.test{
+	color:magenta;
+	}
+maindisp{
+	width: 75%;
+	background: black;
+	text-align: center;
+	border: ascii magenta;
+	height: 100%}
+
+sidedisp{
+	width: 24%;
+	background: black;
+	text-align: center;
+	border-top: ascii magenta;
+	border-right: ascii magenta;
+	border-bottom: ascii magenta;
+	height: 100%}
